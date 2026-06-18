@@ -1,4 +1,4 @@
-<!-- From: /ephstorage/R_dev/vjepa2/AGENTS.md -->
+<!-- AGENTS.md — V-JEPA 2 -->
 # AGENTS.md — V-JEPA 2
 
 This file contains project-specific information for AI coding agents working on the V-JEPA 2 codebase.
@@ -11,17 +11,18 @@ V-JEPA 2 is a self-supervised video representation learning framework developed 
 - **V-JEPA 2.1**: Improved training recipe focusing on dense, temporally consistent features (ViT-B, ViT-L, ViT-g, ViT-G). Uses dense predictive loss, deep self-supervision, and multi-modal tokenizers.
 - **V-JEPA 2-AC**: Action-conditioned world model post-trained from V-JEPA 2 for robot manipulation tasks.
 
-The project is a pure Python package using PyTorch. It is distributed as `vjepa2` (version `0.0.2`) and supports loading pretrained weights via PyTorch Hub and HuggingFace Transformers.
+The project is a pure Python package using PyTorch. It is distributed as `vjepa2` (version `0.0.2`) and supports loading pretrained weights via PyTorch Hub (`hubconf.py`) and HuggingFace Transformers.
 
 ## Technology Stack
 
 - **Language**: Python >= 3.11 (CI uses 3.12; development commonly uses 3.12).
-- **Deep Learning**: PyTorch >= 2.0, torchvision, timm, transformers, einops.
+- **Deep Learning**: PyTorch >= 2.0, torchvision, timm, transformers, einops, peft.
 - **Video I/O**: decord (note: macOS users may need eva-decord or decord2 alternatives).
 - **Distributed Training**: `torch.distributed` (NCCL backend), `submitit` for SLURM job launching.
-- **Data**: webdataset, iopath, pandas, numpy, opencv-python, scikit-image.
+- **Data**: webdataset, iopath, pandas, numpy, opencv-python, scikit-image, h5py.
 - **Logging**: tensorboard, wandb.
 - **Runtime Checking**: beartype.
+- **Config**: pyyaml, python-box, fire.
 - **Testing**: pytest.
 - **Linting/Formatting**: black (26.3.1), flake8 (7.0.0), isort (5.13.2).
 
@@ -195,7 +196,7 @@ python -m evals.main_distributed --fname configs/eval/vitl/ssv2.yaml --time 8600
 - Local multi-GPU: uses `multiprocessing.spawn` with one process per GPU. `CUDA_VISIBLE_DEVICES` is set per process.
 - SLURM: uses `submitit` to launch jobs. `init_distributed` in `src/utils/distributed.py` auto-detects SLURM environment variables (`SLURM_NTASKS`, `SLURM_PROCID`, `SLURM_LOCALID`) and initializes the NCCL process group.
 - Supports FSDP via the `--use_fsdp` flag in evaluation.
-- Common distributed utilities in `src/utils/distributed.py` include custom `AllGather` and `AllReduceSum` autograd functions.
+- Common distributed utilities in `src/utils/distributed.py` include custom `AllGather`, `AllReduceSum`, and `AllReduce` autograd functions.
 
 ## Model Architecture Notes
 

@@ -12,6 +12,9 @@ V-JEPA 2 is Meta FAIR's self-supervised video representation learning framework 
 # Install (editable dev mode)
 pip install -e .
 
+# Install test/lint dependencies (required for CI)
+pip install -r requirements-test.txt
+
 # Run all tests
 pytest tests
 
@@ -32,6 +35,9 @@ python -m black app evals/*.py src tests
 
 # Training (local)
 python -m app.main --fname configs/train/vitl16/pretrain-256px-16f.yaml --devices cuda:0
+
+# Training with debug mode (single process, no spawn — useful for breakpoints)
+python -m app.main --fname configs/train/vitl16/pretrain-256px-16f.yaml --devices cuda:0 --debugmode True
 
 # Evaluation (local)
 python -m evals.main --fname configs/eval/vitl/ssv2.yaml --devices cuda:0
@@ -102,6 +108,23 @@ Key YAML sections:
 ## Style Constraints
 
 - Line length: 119 (black + flake8)
-- Formatter: black, import sorter: isort (profile=black)
-- Linter: flake8 (select E,F,W, ignore E203,E701,W503)
-- All .py files must carry the MIT copyright header from Meta
+- Formatter: black (26.3.1), import sorter: isort 5.13.2 (profile=black)
+- Linter: flake8 7.0.0 (select E,F,W, ignore E203,E701,W503)
+- `.flake8` also ignores F401 on `__init__.py` and `version.py` (per-file-ignores)
+- All new .py files must carry the Meta MIT copyright header:
+  ```python
+  # Copyright (c) Meta Platforms, Inc. and affiliates.
+  #
+  # This source code is licensed under the MIT license found in the
+  # LICENSE file in the root directory of this source tree.
+  ```
+- Runtime type checking via `beartype` is used in some modules.
+
+## CI
+
+- **base_tests.yaml**: Runs `pytest tests` on every push (any branch).
+- **linters.yaml**: Runs isort, flake8, black on push/PR to `master` and `gh/**` branches only. Only triggers when files under `app/`, `evals/*.py`, `src/`, or `tests/` change.
+
+## Platform Notes
+
+- The project depends on `decord` for video I/O, which does not support macOS and is no longer maintained. macOS users may need `eva-decord` or `decord2` as a drop-in replacement.

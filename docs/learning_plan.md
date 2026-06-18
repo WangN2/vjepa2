@@ -1,7 +1,7 @@
 # V-JEPA 2 学习计划（实时更新）
 
 > 学习目标：从零 DL 基础 → 能理解、运行、修改 V-JEPA 2 代码
-> 开始日期：2026-05-11 | 更新日期：2026-05-20
+> 开始日期：2026-05-11 | 更新日期：2026-06-18
 
 ---
 
@@ -50,9 +50,10 @@
 
 逐行读核心组件实现：
 
-1. **RoPEAttention** — 旋转位置编码在 Attention 中的具体实现
-   - 文件：`src/models/utils/modules.py` → `apply_rotary_emb_xyz`
+1. ✅ **RoPEAttention** — 旋转位置编码在 Attention 中的具体实现
+   - 文件：`src/models/utils/modules.py` → `rotate_queries_or_keys`, `RoPEAttention`
    - 理解 3D 位置编码如何在 Q/K 上旋转
+   - 详解文档：`docs/技术细节/rope_详解.md`
 2. **SwiGLU FFN** — 门控线性单元变体
    - 文件：`src/models/utils/modules.py` → `SwiGLUFFN`
    - 理解为什么 SwiGLU 比标准 FFN 效果更好
